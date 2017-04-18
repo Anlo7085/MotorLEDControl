@@ -1,7 +1,7 @@
 
 #include "F28x_Project.h"
 
-//Hello - From Drew
+
 //Globals
 
 volatile struct DAC_REGS* DAC_PTR[4] = {0x0,&DacaRegs,&DacbRegs,&DaccRegs};
@@ -19,6 +19,7 @@ int counter1 = 0;
 int counter2 = 0;
 int counter3 = 0;
 //unsigned long refresh_window;
+float rpmS = -1;        //stable rpm
 float refresh_windo;
 //int begin = 1;
 int reset = 0;
@@ -56,93 +57,94 @@ void main(void)
     spi_fifo_init();
     int cl = -1;
 
-    spi_xmitc(0x0000);
-		spi_xmitc(0x0000);
-		DELAY_US(3);
+        spi_xmita(0x0000);
+        spi_xmita(0x0000);
+        DELAY_US(3);
 
-	for(cl=0;cl<88;cl++) {
-		spi_xmitc(0xE000);
-		spi_xmitc(0x0000);
-		DELAY_US(3);
-				}
+    //clear leds of any data
 
-		spi_xmitc(0xFFFF);
-		spi_xmitc(0xFFFF);
-		DELAY_US(3);
+    for(cl=0;cl<88;cl++) {
+        spi_xmita(0xE000);
+        spi_xmita(0x0000);
+        DELAY_US(3);
+    }
 
-		spi_xmitc(0x0000);
-		spi_xmitc(0x0000);
-		DELAY_US(3);
+        spi_xmita(0xFFFF);
+        spi_xmita(0xFFFF);
+        DELAY_US(3);
+/*
+        spi_xmita(0x0000);
+        spi_xmita(0x0000);
+        DELAY_US(3);
 
-	for(cl=0;cl<88;cl++) {
-		spi_xmitc(0xFFFF);
-		spi_xmitc(0x0000);
-		DELAY_US(3);
-			}
+    for(cl=0;cl<88;cl++) {
+        spi_xmita(0xFF00);
+        spi_xmita(0x00FF);
+        DELAY_US(3);
+    }
 
-		spi_xmitc(0xFFFF);
-		spi_xmitc(0xFFFF);
+        spi_xmita(0xFFFF);
+        spi_xmita(0xFFFF);
+        DELAY_US(3);
 
+        spi_xmitb(0x0000);
+        spi_xmitb(0x0000);
+        DELAY_US(3);
 
-	spi_xmitb(0x0000);
-		spi_xmitb(0x0000);
-		DELAY_US(3);
+    for(cl=0;cl<88;cl++) {
+        spi_xmitb(0xE000);
+        spi_xmitb(0x0000);
+        DELAY_US(3);
+        }
 
-	for(cl=0;cl<88;cl++) {
-		spi_xmitb(0xE000);
-		spi_xmitb(0x0000);
-		DELAY_US(3);
-		}
+        spi_xmitb(0xFFFF);
+        spi_xmitb(0xFFFF);
+        DELAY_US(3);
 
-		spi_xmitb(0xFFFF);
-		spi_xmitb(0xFFFF);
-		DELAY_US(3);
+        spi_xmitb(0x0000);
+        spi_xmitb(0x0000);
+        DELAY_US(3);
 
-		spi_xmitb(0x0000);
-		spi_xmitb(0x0000);
-		DELAY_US(3);
+    for(cl=0;cl<88;cl++) {
+        spi_xmitb(0xFF00);
+        spi_xmitb(0x00FF);
+        DELAY_US(3);
+        }
 
-	for(cl=0;cl<88;cl++) {
-		spi_xmitb(0xFF00);
-		spi_xmitb(0x00FF);
-		DELAY_US(3);
-		}
-
-		spi_xmitb(0xFFFF);
-		spi_xmitb(0xFFFF);
-		DELAY_US(3);
-
-		spi_xmita(0x0000);
-		spi_xmita(0x0000);
-		DELAY_US(3);
-
-	//clear leds of any data
-
-	for(cl=0;cl<88;cl++) {
-		spi_xmita(0xE000);
-		spi_xmita(0x0000);
-		DELAY_US(3);
-	}
-
-		spi_xmita(0xFFFF);
-		spi_xmita(0xFFFF);
-		DELAY_US(3);
-
-		spi_xmita(0x0000);
-		spi_xmita(0x0000);
-		DELAY_US(3);
-
-	for(cl=0;cl<88;cl++) {
-		spi_xmita(0xFF00);
-		spi_xmita(0x00FF);
-		DELAY_US(3);
-	}
-
-		spi_xmita(0xFFFF);
-		spi_xmita(0xFFFF);
-		DELAY_US(3);
+        spi_xmitb(0xFFFF);
+        spi_xmitb(0xFFFF);
+        DELAY_US(3);
 
 
+
+        spi_xmitc(0x0000);
+        spi_xmitc(0x0000);
+        DELAY_US(3);
+
+    for(cl=0;cl<88;cl++) {
+        spi_xmitc(0xE000);
+        spi_xmitc(0x0000);
+        DELAY_US(3);
+                }
+
+        spi_xmitc(0xFFFF);
+        spi_xmitc(0xFFFF);
+        DELAY_US(3);
+
+        spi_xmitc(0x0000);
+        spi_xmitc(0x0000);
+        DELAY_US(3);
+
+    for(cl=0;cl<88;cl++) {
+        spi_xmitc(0xFFFF);
+        spi_xmitc(0x0000);
+        DELAY_US(3);
+            }
+
+        spi_xmitc(0xFFFF);
+        spi_xmitc(0xFFFF);
+
+*/
 
 
 
@@ -184,11 +186,11 @@ void main(void)
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 1;
     EDIS;
 
-	GPIO_SetupXINT2Gpio(72);
+    GPIO_SetupXINT2Gpio(72);
     XintRegs.XINT2CR.bit.POLARITY = 0;          // Falling edge interrupt
-	XintRegs.XINT2CR.bit.ENABLE = 1;            // Enable XINT1
+    XintRegs.XINT2CR.bit.ENABLE = 1;            // Enable XINT1
 
-	IER |= M_INT3;
+    IER |= M_INT3;
     IER |= M_INT1;
 
 
@@ -197,11 +199,11 @@ void main(void)
     //PieCtrlRegs.PIEIER1.bit.INTx4 = 1;
     PieCtrlRegs.PIEIER3.bit.INTx2 = 1;
     PieCtrlRegs.PIEIER1.bit.INTx7 = 1;
-   	PieCtrlRegs.PIEIER1.bit.INTx5 = 1;          // Enable PIE Group 1 INT5
+    PieCtrlRegs.PIEIER1.bit.INTx5 = 1;          // Enable PIE Group 1 INT5
 
 
 
-   	EINT;  // Enable Global interrupt INTM
+    EINT;  // Enable Global interrupt INTM
     ERTM;  // Enable Global realtime interrupt DBGM
 
     DAC_PTR[DAC_NUM]->DACVALS.all = dacval;
@@ -210,17 +212,18 @@ void main(void)
 
     for(;;)
     {
-    	if (reset==1)
-    	{
-    		DINT;
-			ConfigCpuTimer(&CpuTimer1, 200, refresh_windo);
-			CpuTimer1Regs.TCR.all = 0x4000;
-			IER |= M_INT13;
-			EINT;
-			reset =0;
-    	}
+        if (reset==1)
+        {
+            DINT;
+            ConfigCpuTimer(&CpuTimer1, 200, refresh_windo);
+            CpuTimer1Regs.TCR.all = 0x4000;
+            IER |= M_INT13;
+            EINT;
+            counter2=0;
+            reset =0;
+        }
 
-	}
+    }
 
 }
 
@@ -232,29 +235,29 @@ __interrupt void cpu_timer0_isr(void)
    if(counter3 ==2500)
    {
 
-	   if (dacval <targetDAC)
-	   {
-		   dacval++;
-		   DAC_PTR[DAC_NUM]->DACVALS.all = dacval;
-		   DELAY_US(2);
-	   }
+       if (dacval <targetDAC)
+       {
+           dacval++;
+           DAC_PTR[DAC_NUM]->DACVALS.all = dacval;
+           DELAY_US(2);
+       }
 
 
-	   /* if(rpm < target)
-	   {
-		   dacval= dacval +2;
-	   }
-	   else if(rpm > target+5)
-	   {
-		   dacval--;
-	   }
-	   else
-		   dacval = dacval + 2;
-		   */
+       /* if(rpm < target)
+       {
+           dacval= dacval +2;
+       }
+       else if(rpm > target+5)
+       {
+           dacval--;
+       }
+       else
+           dacval = dacval + 2;
+           */
 
 
 
-	   counter3=0;
+       counter3=0;
 
 
    }
@@ -265,123 +268,315 @@ __interrupt void cpu_timer0_isr(void)
 __interrupt void cpu_timer1_isr(void)
 {
 
-	counter2++;
-	int i;
+    counter2++;
+    int i;
 
-	if (counter2==54)
-		{
-			spi_xmita(0x0000);
-			spi_xmita(0x0000);
-			DELAY_US(4);
-			for (i = 0; i < 88; i++) {
-				spi_xmita(0xFF00);
-				spi_xmita(0x00FF);
-				DELAY_US(4);
-			}
-			spi_xmita(0xFFFF);
-			spi_xmita(0xFFFF);
-			DELAY_US(4);
+    if (counter2==54)
+        {
+            spi_xmita(0x0000);
+            spi_xmita(0x0000);
+            DELAY_US(4);
+            for (i = 0; i < 88; i++) {
+                spi_xmita(0xFF00);
+                spi_xmita(0x00F0);
+                DELAY_US(4);
+            }
+            spi_xmita(0xFFFF);
+            spi_xmita(0xFFFF);
+            DELAY_US(4);
 
-			spi_xmita(0x0000);
-			spi_xmita(0x0000);
-			DELAY_US(4);
-			for (i = 0; i < 88; i++) {
-				spi_xmita(0xE000);
-				spi_xmita(0x0000);
-				DELAY_US(4);
-			}
-			spi_xmita(0xFFFF);
-			spi_xmita(0xFFFF);
-			DELAY_US(4);
+            spi_xmita(0x0000);
+            spi_xmita(0x0000);
+            DELAY_US(4);
+            for (i = 0; i < 88; i++) {
+                spi_xmita(0xE000);
+                spi_xmita(0x0000);
+                DELAY_US(4);
+            }
+            spi_xmita(0xFFFF);
+            spi_xmita(0xFFFF);
+            DELAY_US(4);
 
-		}
+            spi_xmitb(0x0000);
+            spi_xmitb(0x0000);
+            DELAY_US(4);
+            for (i = 0; i < 88; i++) {
+                spi_xmitb(0xFF00);
+                spi_xmitb(0xF0F0);
+                DELAY_US(4);
+            }
+            spi_xmitb(0xFFFF);
+            spi_xmitb(0xFFFF);
+            DELAY_US(4);
 
-	if (counter2==108)
-			{
-				spi_xmita(0x0000);
-				spi_xmita(0x0000);
-				DELAY_US(4);
-				for (i = 0; i < 88; i++) {
-					spi_xmita(0xFF00);
-					spi_xmita(0xFF00);
-					DELAY_US(4);
-				}
-				spi_xmita(0xFFFF);
-				spi_xmita(0xFFFF);
-				DELAY_US(4);
+            spi_xmitb(0x0000);
+            spi_xmitb(0x0000);
+            DELAY_US(4);
+            for (i = 0; i < 88; i++) {
+                spi_xmitb(0xE000);
+                spi_xmitb(0x0000);
+                DELAY_US(4);
+            }
+            spi_xmitb(0xFFFF);
+            spi_xmitb(0xFFFF);
+            DELAY_US(4);
 
-				spi_xmita(0x0000);
-				spi_xmita(0x0000);
-				DELAY_US(4);
-				for (i = 0; i < 88; i++) {
-					spi_xmita(0xE000);
-					spi_xmita(0x0000);
-					DELAY_US(4);
-				}
-				spi_xmita(0xFFFF);
-				spi_xmita(0xFFFF);
-				DELAY_US(4);
+            spi_xmitc(0x0000);
+            spi_xmitc(0x0000);
+            DELAY_US(4);
+            for (i = 0; i < 88; i++) {
+                spi_xmitc(0xFF00);
+                spi_xmitc(0x00F0);
+                DELAY_US(4);
+            }
+            spi_xmitc(0xFFFF);
+            spi_xmitc(0xFFFF);
+            DELAY_US(4);
 
-			}
-	if (counter2==162)
-			{
-				spi_xmita(0x0000);
-				spi_xmita(0x0000);
-				DELAY_US(4);
-				for (i = 0; i < 88; i++) {
-					spi_xmita(0xFFFF);
-					spi_xmita(0x0000);
-					DELAY_US(4);
-				}
-				spi_xmita(0xFFFF);
-				spi_xmita(0xFFFF);
-				DELAY_US(4);
+            spi_xmitc(0x0000);
+            spi_xmitc(0x0000);
+            DELAY_US(4);
+            for (i = 0; i < 88; i++) {
+                spi_xmitc(0xE000);
+                spi_xmitc(0x0000);
+                DELAY_US(4);
+            }
+            spi_xmitc(0xFFFF);
+            spi_xmitc(0xFFFF);
+            DELAY_US(4);
 
-				spi_xmita(0x0000);
-				spi_xmita(0x0000);
-				DELAY_US(4);
-				for (i = 0; i < 88; i++) {
-					spi_xmita(0xE000);
-					spi_xmita(0x0000);
-					DELAY_US(4);
-				}
-				spi_xmita(0xFFFF);
-				spi_xmita(0xFFFF);
-				DELAY_US(4);
+        }
 
-			}
-	if (counter2==216)
-	{
-		spi_xmita(0x0000);
-		spi_xmita(0x0000);
-		DELAY_US(4);
-		for (i = 0; i < 88; i++) {
-			spi_xmita(0xFFFF);
-			spi_xmita(0xFFFF);
-			DELAY_US(4);
-		}
-		spi_xmita(0xFFFF);
-		spi_xmita(0xFFFF);
-		DELAY_US(4);
+    if (counter2==108)
+            {
+                spi_xmita(0x0000);
+                spi_xmita(0x0000);
+                DELAY_US(4);
+                for (i = 0; i < 88; i++) {
+                    spi_xmita(0xFF00);
+                    spi_xmita(0xFF00);
+                    DELAY_US(4);
+                }
+                spi_xmita(0xFFFF);
+                spi_xmita(0xFFFF);
+                DELAY_US(4);
 
-		spi_xmita(0x0000);
-		spi_xmita(0x0000);
-		DELAY_US(4);
-		for (i = 0; i < 88; i++) {
-			spi_xmita(0xE000);
-			spi_xmita(0x0000);
-			DELAY_US(4);
-		}
-		spi_xmita(0xFFFF);
-		spi_xmita(0xFFFF);
-		DELAY_US(4);
+                spi_xmita(0x0000);
+                spi_xmita(0x0000);
+                DELAY_US(4);
+                for (i = 0; i < 88; i++) {
+                    spi_xmita(0xE000);
+                    spi_xmita(0x0000);
+                    DELAY_US(4);
+                }
+                spi_xmita(0xFFFF);
+                spi_xmita(0xFFFF);
+                DELAY_US(4);
 
-		counter2=0;
-	}
+                spi_xmitb(0x0000);
+                spi_xmitb(0x0000);
+                DELAY_US(4);
+                for (i = 0; i < 88; i++) {
+                    spi_xmitb(0xFFFF);
+                    spi_xmitb(0xFF00);
+                    DELAY_US(4);
+                }
+                spi_xmitb(0xFFFF);
+                spi_xmitb(0xFFFF);
+                DELAY_US(4);
+
+                spi_xmitb(0x0000);
+                spi_xmitb(0x0000);
+                DELAY_US(4);
+                for (i = 0; i < 88; i++) {
+                    spi_xmitb(0xE000);
+                    spi_xmitb(0x0000);
+                    DELAY_US(4);
+                }
+                spi_xmitb(0xFFFF);
+                spi_xmitb(0xFFFF);
+                DELAY_US(4);
+
+                spi_xmitc(0x0000);
+                spi_xmitc(0x0000);
+                DELAY_US(4);
+                for (i = 0; i < 88; i++) {
+                    spi_xmitc(0xFF00);
+                    spi_xmitc(0xFF00);
+                    DELAY_US(4);
+                }
+                spi_xmitc(0xFFFF);
+                spi_xmitc(0xFFFF);
+                DELAY_US(4);
+
+                spi_xmitc(0x0000);
+                spi_xmitc(0x0000);
+                DELAY_US(4);
+                for (i = 0; i < 88; i++) {
+                    spi_xmitc(0xE000);
+                    spi_xmitc(0x0000);
+                    DELAY_US(4);
+                }
+                spi_xmitc(0xFFFF);
+                spi_xmitc(0xFFFF);
+                DELAY_US(4);
+
+            }
+    if (counter2==162)
+            {
+                spi_xmita(0x0000);
+                spi_xmita(0x0000);
+                DELAY_US(4);
+                for (i = 0; i < 88; i++) {
+                    spi_xmita(0xFFFF);
+                    spi_xmita(0x0000);
+                    DELAY_US(4);
+                }
+                spi_xmita(0xFFFF);
+                spi_xmita(0xFFFF);
+                DELAY_US(4);
+
+                spi_xmita(0x0000);
+                spi_xmita(0x0000);
+                DELAY_US(4);
+                for (i = 0; i < 88; i++) {
+                    spi_xmita(0xE000);
+                    spi_xmita(0x0000);
+                    DELAY_US(4);
+                }
+                spi_xmita(0xFFFF);
+                spi_xmita(0xFFFF);
+                DELAY_US(4);
+
+                spi_xmitb(0x0000);
+                spi_xmitb(0x0000);
+                DELAY_US(4);
+                for (i = 0; i < 88; i++) {
+                    spi_xmitb(0xFFFF);
+                    spi_xmitb(0x00FF);
+                    DELAY_US(4);
+                }
+                spi_xmitb(0xFFFF);
+                spi_xmitb(0xFFFF);
+                DELAY_US(4);
+
+                spi_xmitb(0x0000);
+                spi_xmitb(0x0000);
+                DELAY_US(4);
+                for (i = 0; i < 88; i++) {
+                    spi_xmitb(0xE000);
+                    spi_xmitb(0x0000);
+                    DELAY_US(4);
+                }
+                spi_xmitb(0xFFFF);
+                spi_xmitb(0xFFFF);
+                DELAY_US(4);
+
+                spi_xmitc(0x0000);
+                spi_xmitc(0x0000);
+                DELAY_US(4);
+                for (i = 0; i < 88; i++) {
+                    spi_xmitc(0xFFFF);
+                    spi_xmitc(0x0000);
+                    DELAY_US(4);
+                }
+                spi_xmitc(0xFFFF);
+                spi_xmitc(0xFFFF);
+                DELAY_US(4);
+
+                spi_xmitc(0x0000);
+                spi_xmitc(0x0000);
+                DELAY_US(4);
+                for (i = 0; i < 88; i++) {
+                    spi_xmitc(0xE000);
+                    spi_xmitc(0x0000);
+                    DELAY_US(4);
+                }
+                spi_xmitc(0xFFFF);
+                spi_xmitc(0xFFFF);
+                DELAY_US(4);
+
+            }
+    if (counter2==216)
+    {
+        spi_xmita(0x0000);
+        spi_xmita(0x0000);
+        DELAY_US(4);
+        for (i = 0; i < 88; i++) {
+            spi_xmita(0xFFF0);
+            spi_xmita(0xF0F0);
+            DELAY_US(4);
+        }
+        spi_xmita(0xFFFF);
+        spi_xmita(0xFFFF);
+        DELAY_US(4);
+
+        spi_xmita(0x0000);
+        spi_xmita(0x0000);
+        DELAY_US(4);
+        for (i = 0; i < 88; i++) {
+            spi_xmita(0xE000);
+            spi_xmita(0x0000);
+            DELAY_US(4);
+        }
+        spi_xmita(0xFFFF);
+        spi_xmita(0xFFFF);
+        DELAY_US(4);
+
+        spi_xmitb(0x0000);
+        spi_xmitb(0x0000);
+        DELAY_US(4);
+        for (i = 0; i < 88; i++) {
+            spi_xmitb(0xFFF0);
+            spi_xmitb(0xFFF0);
+            DELAY_US(4);
+        }
+        spi_xmitb(0xFFFF);
+        spi_xmitb(0xFFFF);
+        DELAY_US(4);
+
+        spi_xmitb(0x0000);
+        spi_xmitb(0x0000);
+        DELAY_US(4);
+        for (i = 0; i < 88; i++) {
+            spi_xmitb(0xE000);
+            spi_xmitb(0x0000);
+            DELAY_US(4);
+        }
+        spi_xmitb(0xFFFF);
+        spi_xmitb(0xFFFF);
+        DELAY_US(4);
+
+        spi_xmitc(0x0000);
+        spi_xmitc(0x0000);
+        DELAY_US(4);
+        for (i = 0; i < 88; i++) {
+            spi_xmitc(0xFFF0);
+            spi_xmitc(0xF0F0);
+            DELAY_US(4);
+        }
+        spi_xmitc(0xFFFF);
+        spi_xmitc(0xFFFF);
+        DELAY_US(4);
+
+        spi_xmitc(0x0000);
+        spi_xmitc(0x0000);
+        DELAY_US(4);
+        for (i = 0; i < 88; i++) {
+            spi_xmitc(0xE000);
+            spi_xmitc(0x0000);
+            DELAY_US(4);
+        }
+        spi_xmitc(0xFFFF);
+        spi_xmitc(0xFFFF);
+        DELAY_US(4);
+
+        counter2=0;
+    }
 
 
 
-	   PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
+       PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 
  }
 
@@ -389,100 +584,104 @@ __interrupt void cpu_timer1_isr(void)
 
 __interrupt void xint1_isr(void)
 {
-	float uts = 20000.0;											//This is the conversion from counter ticks to seconds.
-	float seconds = counter1/uts; //time in seconds per rotation
-	//float refresh_windo = seconds*1000000.0/216.0;   //microseconds per refresh limit (216 refreshes total)
-	float rotations_per_second = 1/seconds;
-	float stm = 60.0;
-	float rpmf = rotations_per_second * stm; //rotations per minute.
-	if(rpmf < 0 || rpmf > targetRPMF*(5));
-	else
-	{
-		rotations_per_second = rpmf/60.0;
-		refresh_windo = (1/rotations_per_second)*1000000.0/216.0;
-		rpm = (int)rpmf+ 1;
+    float uts = 20000.0;                                            //This is the conversion from counter ticks to seconds.
+    float seconds = counter1/uts; //time in seconds per rotation
+    //float refresh_windo = seconds*1000000.0/216.0;   //microseconds per refresh limit (216 refreshes total)
+    float rotations_per_second = 1/seconds;
+    float stm = 60.0;
+    float rpmf = rotations_per_second * stm; //rotations per minute calc, including noise.
+    if (rpmS == -1 && rpmf < 150) {   //initial set of stable RPM
+        rpmS = rpmf;
+    }
+    if(rpmf < rpmS*.9 || rpmf > rpmS*1.1);   //throw out rpm calcs greater than 10% off previous value
+    else
+    {
+        rpmS = rpmf;  //set most recent read to stable RPM decimal to be used
+        rotations_per_second = rpmf/60.0;
+        refresh_windo = (1.0/rotations_per_second)*1000000.0/216.0;
+        rpm = (int)rpmf+ 1;
 
-	//	refresh_window = (unsigned long)refresh_windo;				//This is the number that goes to the post.
-	//	if (rpm > targetRPM-10 && rpm < targetRPM + 10)
-	//	{
-	//		targetDAC = targetDAC-200;
-	//		dacval= targetDAC;
+    //  refresh_window = (unsigned long)refresh_windo;              //This is the number that goes to the post.
+    //  if (rpm > targetRPM-10 && rpm < targetRPM + 10)
+    //  {
+    //      targetDAC = targetDAC-200;
+    //      dacval= targetDAC;
 
 
-		reset =1;
+        reset =1;
 
 
-	//	}
-	}
-		counter1 = 0;
+    //  }
+    }
+        counter1 = 0;
 /*
-		int i;
+        int i;
 
-			spi_xmita(0x0000);
-			spi_xmita(0x0000);
-			DELAY_US(4);
-			for (i = 0; i < 88; i++) {
-				spi_xmita(0xFF00);
-				spi_xmita(0x00FF);
-				DELAY_US(4);
-			}
-			spi_xmita(0xFFFF);
-			spi_xmita(0xFFFF);
-			DELAY_US(4);
+            spi_xmita(0x0000);
+            spi_xmita(0x0000);
+            DELAY_US(4);
+            for (i = 0; i < 88; i++) {
+                spi_xmita(0xFF00);
+                spi_xmita(0x00FF);
+                DELAY_US(4);
+            }
+            spi_xmita(0xFFFF);
+            spi_xmita(0xFFFF);
+            DELAY_US(4);
 
-			spi_xmita(0x0000);
-			spi_xmita(0x0000);
-			DELAY_US(4);
-			for (i = 0; i < 88; i++) {
-				spi_xmita(0xE000);
-				spi_xmita(0x0000);
-				DELAY_US(4);
-			}
-			spi_xmita(0xFFFF);
-			spi_xmita(0xFFFF);
-			DELAY_US(4);
+            spi_xmita(0x0000);
+            spi_xmita(0x0000);
+            DELAY_US(4);
+            for (i = 0; i < 88; i++) {
+                spi_xmita(0xE000);
+                spi_xmita(0x0000);
+                DELAY_US(4);
+            }
+            spi_xmita(0xFFFF);
+            spi_xmita(0xFFFF);
+            DELAY_US(4);
 
 */
 
-	//}
-	//counter1 = 0;
+    //}
+    //counter1 = 0;
 
 
-	PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
+    PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 }
 
 
 
-void spi_xmita(Uint16 a)		//Transmit via SPIA
+void spi_xmita(Uint16 a)        //Transmit via SPIA
 {
    SpiaRegs.SPITXBUF = a;
 }
 
-void spi_xmitb(Uint16 a)		//Transmit via SPIB
+void spi_xmitb(Uint16 a)        //Transmit via SPIB
 {
    SpibRegs.SPITXBUF = a;
 }
 
-void spi_xmitc(Uint16 a)		//Transmit via SPIC
+void spi_xmitc(Uint16 a)        //Transmit via SPIC
 {
    SpicRegs.SPITXBUF = a;
 }
 
 void spi_fifo_init()
 {
-   SpiaRegs.SPIFFTX.all = 0xE040;	//Initialize SPIA FIFO Registers
+   SpiaRegs.SPIFFTX.all = 0xE040;   //Initialize SPIA FIFO Registers
    SpiaRegs.SPIFFRX.all = 0x2044;
    SpiaRegs.SPIFFCT.all = 0x0;
 
-   SpibRegs.SPIFFTX.all = 0xE040;	//Initialize SPIB FIFO Registers
+   SpibRegs.SPIFFTX.all = 0xE040;   //Initialize SPIB FIFO Registers
    SpibRegs.SPIFFRX.all = 0x2044;
    SpibRegs.SPIFFCT.all = 0x0;
 
-   SpicRegs.SPIFFTX.all = 0xE040;	//Initialize SPIC FIFO Registers
+   SpicRegs.SPIFFTX.all = 0xE040;   //Initialize SPIC FIFO Registers
    SpicRegs.SPIFFRX.all = 0x2044;
    SpicRegs.SPIFFCT.all = 0x0;
 
-   InitSpi();	//Initialize Core SPI Registers
+   InitSpi();   //Initialize Core SPI Registers
 }
 
 
@@ -503,3 +702,7 @@ void configureDAC(Uint16 dac_num)
 //
 // End of file
 //
+
+
+
+
